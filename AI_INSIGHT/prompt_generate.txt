@@ -1,0 +1,9 @@
+Genera un oggetto JSON che rappresenta dati realistici e variabili provenienti da un sistema IoT agricolo.
+
+Requisiti:
+- Il campo `_desc` deve sempre essere presente e descrivere in modo conciso il contesto (es. "Serra di basilico" o "Campo sperimentale di girasole").
+- Gli altri campi sono liberi, ma devono simulare misurazioni o stati rilevanti in agricoltura di precisione: ad esempio temperatura (aria o suolo), umidità, livelli di CO2, luce, irrigazione, stato delle pompe, tipo di coltura, consumi elettrici, batteria, dati da sensori, ecc.
+- Usa nomi di campo realistici ma anche variabili (non sempre gli stessi), e sentiti libero di usare strutture annidate o campi opzionali.
+- Non serve uno schema rigido: l’oggetto deve apparire credibile come output di un nodo IoT agricolo in campo o in serra.
+- Il contenuto deve riflettere una giornata estiva in Europa.
+- Restituisci solo l’oggetto JSON, senza testo o commenti aggiuntivi.

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Insight AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .card-insight {
+        max-width: 700px;
+        margin: 5vh auto;
+        border-left: 5px solid #28a745;
+      }
+      .insight-title {
+        font-weight: bold;
+        color: #28a745;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card shadow-sm card-insight">
+        <div class="card-body">
+          <h5 class="insight-title" id="insightTitle">Caricamento...</h5>
+          <hr />
+          <pre id="insightMessage">Attendere, stiamo elaborando i dati del campo...</pre>
+          <div class="text-muted mt-3" id="datasetDesc"></div>
+          <pre id="datasetDetails" class="mt-3 language-json" style="display: none"><code class="language-json"></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function loadAndSendData() {
+        try {
+          // Genera un esempio di dati
+          const randomExample = await (await fetch("/generate")).json();
+
+          // Visualizza descrizione
+          document.getElementById("datasetDesc").innerText = `Origine dati: ${randomExample._desc || "sconosciuta"}`;
+          const preElement = document.getElementById("datasetDetails");
+          const codeElement = preElement.querySelector("code");
+          codeElement.textContent = JSON.stringify(randomExample, null, 2);
+          preElement.style.display = "block";
+          Prism.highlightElement(codeElement);
+
+          const insightResponse = await fetch("/analyze", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(randomExample),
+          });
+
+          const insight = await insightResponse.json();
+
+          // Popola la pagina con il risultato
+          document.getElementById("insightTitle").innerText = insight.title || "Insight non disponibile";
+          document.getElementById("insightMessage").innerText = insight.message || "Nessun dettaglio ricevuto.";
+        } catch (error) {
+          document.getElementById("insightTitle").innerText = "Errore";
+          document.getElementById("insightMessage").innerText = "Impossibile caricare o inviare i dati. Verifica il backend.";
+          console.error(error);
+        }
+      }
+
+      // Esegui al caricamento
+      window.onload = loadAndSendData;
+    </script>
+  </body>
+</html>
